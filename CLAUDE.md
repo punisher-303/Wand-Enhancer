@@ -1,10 +1,10 @@
 # Wand Enhancer
 
-WPF (.NET Framework 4.8) tool that patches the Wand Electron app's `app.asar`, plus an embedded mobile Remote Web Panel (`web-panel/`, Preact and Vite). Keep changes narrow and preserve the patch pipeline invariants. README.md owns user docs, CONTRIBUTING.md the release process.
+WPF (.NET Framework 4.8) tool that patches the Wand Electron app's `app.asar`, plus an embedded mobile Remote Web Panel (`web-panel/`, Preact and Vite). Keep changes narrow and preserve the patch pipeline.
 
 ## Commands
 
-- `build.cmd` (`build.ps1 -Configuration Release`) - the full gate: panel lint, typecheck, build and Vitest, WPF build, desktop state and patch locator checks. Run it after any code change. It uses temporary fixtures and never touches a real Wand install.
+- `build.cmd` (`build.ps1 -Configuration Release`) - the full gate: panel lint, typecheck, build and Vitest, WPF build, desktop state and patch locator checks. Run it after any code change. It uses the repo root and the same desktop checks as release builds.
 - `cd web-panel; pnpm run build` - panel only: typecheck, Vite, bridge bundle, `verify:dist`
 - `cd web-panel; pnpm exec vitest run <file>` - one web test
 - `build.cmd -EnableUpdateNotifications` - the opt-in update-check variant
@@ -15,15 +15,15 @@ WPF (.NET Framework 4.8) tool that patches the Wand Electron app's `app.asar`, p
 
 | Rule | Covers |
 |---|---|
-| `patch-engine.md` | structural JS patches, `PatchEntry`, payload scripts, Pro and DevTools patches (`Core/EnhancerConfig.cs`, `Core/Js/**`, `Patches/*.js`) |
-| `asar-pipeline.md` | `Enhancer.Patch()` rollback, backups, auxiliary service integrity gate, ASAR extraction (`Core/Patching/**`, `AsarSharp/**`) |
-| `auto-apply.md` | update watcher, Squirrel update detection, launcher deployment, `launcher.log` (`Core/Services/**`, `Program.cs`) |
+| `patch-engine.md` | structural JS patches, `PatchEntry`, payload scripts, Pro and DevTools patches (`WandEnhancer/Core/Js/**`, `WandEnhancer/Patches/*.js`) |
+| `asar-pipeline.md` | `Enhancer.Patch()` rollback, backups, auxiliary service integrity gate, ASAR extraction (`WandEnhancer/Core/Patching/**`, `AsarSharp/**`) |
+| `auto-apply.md` | update watcher, Squirrel update detection, launcher deployment, `launcher.log` (`WandEnhancer/Core/Services/**`, `WandEnhancer/Program.cs`) |
 | `update-notifications.md` | compile-time opt-in GitHub release check |
 | `remote-bridge.md` | Electron bridge, renderer scripts, websocket protocol (`web-panel/bridge/**`, `web-panel/protocol/**`) |
 | `web-panel.md` | panel size and dist limits, storage, enums, controls, haptics, drawer performance (`web-panel/src/**`) |
 | `testing.md` | test harnesses and what they may touch (`scripts/**`, `*.test.ts`) |
 
-Rules describe the code as it is. A change that adds, renames or retires a mechanism, convention or path updates every rule that names it, in the same commit: grep `.claude/` for the old name before finishing. `web-panel/scripts/docs-refs.test.ts` fails when a rule names a path that no longer exists.
+Rules describe the code as it is. A change that adds, renames or retires a mechanism, convention or path updates every rule that names it, in the same commit: grep `.claude/` for the old name before editing code or documentation.
 
 ## Comments
 
