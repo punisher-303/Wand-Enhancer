@@ -1,6 +1,6 @@
 ---
 paths:
-  - 'WandEnhancer/Core/EnhancerConfig.cs'
+  - 'WandEnhancer/Core/JavaScriptPatchApplier.cs'
   - 'WandEnhancer/Core/Js/**'
   - 'WandEnhancer/Patches/*.js'
   - 'scripts/test-patch-locators.ps1'
@@ -10,7 +10,7 @@ paths:
 
 - Patches are located structurally, not by shape. Anchor on something Wand does not rename between builds (an API endpoint, an IPC channel name, a public method name), then walk the delimiters with `Resolve` and targeted `slice`s. The actual JAR/ASAR content changes between releases, but the semantic anchor remains.
 - No regex across a whole method body or bundle. Scope patterns to a located `JsFunction` via `Resolve`, so they run on a few hundred characters.
-- A patch is one `PatchEntry` in `WandEnhancer/Core/EnhancerConfig.cs`; its `Locate` delegate returns the edits. Return `null` when the anchor is absent: that means "not my file". Throw only when the anchor is definitely in the wrong bundle, not just missing.
+- A patch is one `PatchEntry`; its `Locate` delegate returns the edits. Return `null` when the anchor is absent: that means "not my file". Throw only when the anchor is definitely in the wrong bundle, not just missing.
 - Payload JS lives in `WandEnhancer/Patches/*.js`, embedded as `patches/<name>.js`, and is loaded with `PatchPayload.Load(name, "key", value, ...)`, which fills `${key}` placeholders in one pass. Keep shared payload terms in the same names.
 - Edits from one patch apply highest offset first. Keep them non-overlapping.
 - A patch that exists only on some builds sets `CapabilityHints`: an absent capability logs a skip, a detected but unpatchable one still fails the run.
